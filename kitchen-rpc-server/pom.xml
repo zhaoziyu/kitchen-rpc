@@ -2,14 +2,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--指定Maven私服地址-->
+    <distributionManagement>
+        <repository>
+            <id>release</id>
+            <name>local private nexus</name>
+            <url>http://192.168.10.38:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.10.38:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <parent>
         <artifactId>kitchen-rpc</artifactId>
         <groupId>com.kitchen</groupId>
-        <version>1.0.0</version>
+        <version>2.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kitchen-rpc-server</artifactId>
+    <version>2.0.0</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <!-- 内部模块依赖 -->
+        <dependency>
+            <groupId>com.kitchen</groupId>
+            <artifactId>kitchen-rpc-registry</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+    </dependencies>
 
 
 </project>

@@ -4,16 +4,116 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--指定Maven私服地址-->
+    <distributionManagement>
+        <repository>
+            <id>release</id>
+            <name>local private nexus</name>
+            <url>http://192.168.10.38:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.10.38:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <groupId>com.kitchen</groupId>
     <artifactId>kitchen-rpc</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
+    <packaging>pom</packaging>
+
     <modules>
         <module>kitchen-rpc-common</module>
         <module>kitchen-rpc-client</module>
         <module>kitchen-rpc-server</module>
         <module>kitchen-rpc-registry</module>
     </modules>
-    <packaging>pom</packaging>
+
+    <properties>
+        <!-- 指定Maven编译时使用的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- 默认 JDK 版本 -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+
+        <!--指定版本号-->
+        <spring.version>4.3.2.RELEASE</spring.version>
+        <junit.version>4.12</junit.version>
+        <netty-version>4.1.15.Final</netty-version>
+        <collections4.version>4.0</collections4.version>
+        <protostuff.version>1.0.9</protostuff.version>
+        <lang3.version>3.3.2</lang3.version>
+        <curator.version>2.11.1</curator.version>
+        <javatuples.version>1.2</javatuples.version>
+        <!-- javaee相关版本 -->
+        <javaee-api.version>7.0</javaee-api.version>
+        <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
+    </properties>
+
+    <dependencies>
+        <!--
+            Java元组支持 http://www.javatuples.org/
+
+            Pair<String, Integer> func(String input) {
+                // something...
+                return Pair.with(stringResult, intResult);
+            }
+        -->
+        <dependency>
+            <groupId>org.javatuples</groupId>
+            <artifactId>javatuples</artifactId>
+            <version>${javatuples.version}</version>
+        </dependency>
+
+        <!-- Netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-version}</version>
+        </dependency>
+
+        <!-- Apache Commons Collections -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${collections4.version}</version>
+        </dependency>
+
+        <!-- 测试相关 -->
+        <dependency><!-- JUnit 测试 只在开发时引入，发布的时候不会加载 -->
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
