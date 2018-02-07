@@ -44,7 +44,7 @@
         <!--指定版本号-->
         <spring.version>4.3.13.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
-        <netty-version>4.1.15.Final</netty-version>
+        <netty-version>4.1.21.Final</netty-version>
         <collections4.version>4.0</collections4.version>
         <protostuff.version>1.0.9</protostuff.version>
         <lang3.version>3.3.2</lang3.version>

@@ -63,7 +63,6 @@ public class CommonCuratorTool {
         if (zooKeeperClient != null) {
             zooKeeperClient.close();
             zooKeeperClient = null;
-            LOGGER.info("已关闭ZooKeeper连接");
         }
     }
 

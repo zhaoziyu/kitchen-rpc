@@ -15,12 +15,14 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
 @Component
 @Lazy(false)
+@Scope("singleton")
 class RpcClient implements InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcClientProxy.class);
@@ -30,7 +32,7 @@ class RpcClient implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        logger.info("RpcClient开始初始化……");
+        logger.info("<RpcClient>: 开始初始化……");
         if (config.rpcOpen) {
             // TODO 是否可以通过Spring注入至PolicyConfig，或在PolicyConfig中使用@Value注解
             PolicyConfig.SERVICE_LB_POLICY = config.SERVICE_LB_POLICY;
@@ -38,7 +40,7 @@ class RpcClient implements InitializingBean, DisposableBean {
             RpcServiceDiscovery rpcServiceDiscovery = new ZooKeeperServiceDiscovery(config.registryCenterAddress, config.rpcName);
             ClientChannelCache.setRpcServiceDiscovery(rpcServiceDiscovery);
         } else {
-            logger.info("未启用RPC服务，如需启用RPC服务，请在application.yml中设置相关配置");
+            logger.info("<RpcClient>: 未启用RPC服务,如需启用RPC服务,请在application.yml中设置相关配置");
         }
     }
 
@@ -46,7 +48,7 @@ class RpcClient implements InitializingBean, DisposableBean {
     @Override
     public void destroy() {
         if (config.rpcOpen) {
-            logger.info("回收RPC相关资源");
+            logger.info("<RpcClient>: 回收RPC相关资源");
             if (ClientChannelCache.getRpcServiceDiscovery() != null) {
                 ClientChannelCache.getRpcServiceDiscovery().stop();
             }

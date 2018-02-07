@@ -27,7 +27,7 @@ public class RandomPortFetcher implements PortFetcher {
         Integer usablePort = null;
         while (!already) {
             int port = generateIntValueByRange(PORT_BEGIN, PORT_END);
-            logger.info("正在尝试端口" + port + "的可用性\n");
+            logger.info("<RpcServer>: 正在尝试端口" + port + "的可用性");
             Pair<Boolean, String> result = PortVerifier.availability(port);
             if (result.getValue0()) {
                 already = true;
@@ -36,9 +36,9 @@ public class RandomPortFetcher implements PortFetcher {
         }
 
         if (usablePort == null) {
-            throw new ProviderDeployException("初始化异常：未找到可用端口");
+            throw new ProviderDeployException("<RpcServer>: 初始化异常,未找到可用端口");
         }
-        logger.info("端口" + usablePort + "可用");
+        logger.info("<RpcServer>: 端口" + usablePort + "可用");
         return usablePort;
     }
 

@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
  * @date 2016-12-18
  * @author 赵梓彧 - kitchen_dev@163.com
  */
-class ClientBoostrapFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientBoostrapFactory.class);
+class ClientBootstrapFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrapFactory.class);
     /**
      * 客户端IO处理线程池
      * 默认线程数量：当前服务器的处理器核数 * 2
@@ -25,7 +25,7 @@ class ClientBoostrapFactory {
      */
     private static EventLoopGroup eventLoopGroup = new NioEventLoopGroup(RpcClientConfig.RPC_CLIENT_IO_THREADS);
 
-    public static Bootstrap createNewBoostrap(String serviceAddress) {
+    public static Bootstrap createNewBootstrap(String serviceAddress) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(eventLoopGroup);
         bootstrap.channel(NioSocketChannel.class);

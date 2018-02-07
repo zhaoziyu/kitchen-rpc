@@ -55,6 +55,7 @@ public class DiscoveryCurator {
      */
     public static void disconnectionZooKeeperServer() {
         CommonCuratorTool.disconnectionZooKeeperServer(ZOOKEEPER_CLIENT);
+        LOGGER.info("<RpcClient>: 已关闭ZooKeeper连接");
     }
     //------------------------------------------------------CuratorFramework-----------------------------------------------------
 
@@ -87,7 +88,7 @@ public class DiscoveryCurator {
         if (PROVIDER_NODES_CACHE != null) {
             PROVIDER_NODES_CACHE.close();
             PROVIDER_NODES_CACHE = null;
-            LOGGER.info("关闭ZooKeeper节点检查者");
+            LOGGER.info("<RpcClient>: 关闭ZooKeeper节点检查者");
         }
     }
     //---------------------------------------------------------TreeCache---------------------------------------------------------

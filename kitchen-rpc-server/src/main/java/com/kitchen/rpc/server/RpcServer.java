@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.net.BindException;
@@ -43,24 +44,18 @@ import java.util.Map;
  */
 @Component
 @Lazy(false)
+@Scope("singleton")
 public class RpcServer implements ApplicationContextAware, InitializingBean, DisposableBean {
-    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
-
-    private static Boolean rpcServerStarted = Boolean.FALSE;
-
     //确保不能被外部工程初始化
     protected RpcServer() {
 
     }
+    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+
+    private static Boolean rpcServerStarted = Boolean.FALSE;
 
     @Autowired
     private RpcServerConfig config;
-
-    /**
-     * RPC服务注册的服务器（默认为ZooKeeper）
-     * 通过Spring配置文件初始化
-     */
-    private RpcServiceRegistry rpcServiceRegistry;
 
     // Netty通道启动后的返回结果
     private static ChannelFuture future = null;
@@ -74,9 +69,28 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        scanRpcService();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        logger.info("<RpcServer>: 开始初始化……");
+
+        if (!config.rpcOpen) {
+            logger.warn("<RpcServer>: 未启用RPC服务,如需启用,请在application.yml中设置相关配置");
+            return;
+        }
+
+        InetSocketAddress address = getHostSocketAddress();
+
+        initRpcServer(address);
+
+        initServiceRegistry(address);
     }
 
     private void scanRpcService() {
+        RpcServerUtil.setContext(applicationContext);
+
         // 扫描带有 RpcService 注解的类并初始化 RegistryCache 对象
         int count = 0;
         Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(RpcService.class);
@@ -105,12 +119,11 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
                 count++;
             }
         }
-        RpcServerUtil.setContext(applicationContext);
-        String log = "\n完成服务扫描";
+        String log = "<RpcServer>: 完成Rpc服务扫描";
         if (count > 0) {
-            log += "，共扫描到" + count + "个Rpc服务";
+            log += "，共扫描到" + count + "个服务";
         } else {
-            log += "，未扫描到Rpc服务";
+            log += "，未扫描到服务";
         }
         for (String key : serviceBeanMap.keySet()) {
             log += "\n" + key;
@@ -118,10 +131,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
         logger.info(log);
     }
 
-    private void initRpcServer() {
-        // 初始化RPC功能
-        RegistryCache.setRpcServiceName(config.rpcName);
-
+    private InetSocketAddress getHostSocketAddress() {
         // 初始化宿主主机的Host和Port
         String ip = AddressFetcherUtil.getHostIp(config.serverHostType, config.serverHostIp);
         if (ip == null) {
@@ -135,15 +145,25 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
         }
         // 服务端地址
         InetSocketAddress localAddress = new InetSocketAddress(ip, port);
-        String serverAddress = ip + ":" + port;
+
+        return localAddress;
+    }
+    private void initServiceRegistry(InetSocketAddress address) {
+        // 初始化RPC功能
+        RegistryCache.setRpcServiceName(config.rpcName);
+
+        String serverAddress = address.getAddress().getHostAddress() + ":" + address.getPort();
         RegistryCache.address(serverAddress);
         RegistryCache.weight(config.serverWeight);
 
         // 初始化服务注册中心
         // TODO 注册和发现通过“配置+抽象工厂”实现，支持多种注册中心
-        rpcServiceRegistry = new ZooKeeperServiceRegistry(config.registry);
+        RpcServiceRegistry rpcServiceRegistry = new ZooKeeperServiceRegistry(config.registry);
 
-
+        // 注册RPC服务
+        RegistryCache.registryCacheService(rpcServiceRegistry);
+    }
+    private void initRpcServer(InetSocketAddress localAddress) throws InterruptedException {
         // 创建并初始化 Netty 服务端 Bootstrap 对象
         ServerBootstrap bootstrap = new ServerBootstrap();
         // 设置并绑定Reactor线程池（注：也可以只创建一个共享线程池），Netty默认线程数是“Java虚拟机可用的处理器数量的2倍”
@@ -164,15 +184,12 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
             future = bootstrap.bind().sync();
         } catch (Exception e) {
             if (e instanceof BindException) {
-                logger.error("初始化异常：服务地址绑定失败");
+                logger.error("<RpcServer>: 初始化异常：服务地址绑定失败");
                 shutdownService();
             }
         }
 
-        // 注册RPC服务
-        RegistryCache.registryCacheService(rpcServiceRegistry);
-
-        logger.info("服务提供者({}  {}:{})已启动完毕",
+        logger.info("<RpcServer>: 服务提供者({}  {}:{})已启动完毕,开始监听请求",
                 config.rpcName,
                 localAddress.getAddress().getHostAddress(),
                 localAddress.getPort()
@@ -183,22 +200,16 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
      * 主动关闭RpcServer，用于异常情况退出
      */
     private void shutdownService() {
-        logger.info("服务退出......");
+        logger.info("<RpcServer>: 服务退出......");
         Runtime.getRuntime().exit(500);
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        logger.info("RpcServer开始初始化……");
-
-        if (!config.rpcOpen) {
-            logger.warn("未启用RPC服务。如需启用，请在application.yml中设置相关配置");
-            return;
-        }
-        scanRpcService();
-        initRpcServer();
-    }
-
+    /**
+     * TODO 需验证netty是否需要阻塞主线程
+     * 原来在初始化最后添加"future.channel().closeFuture().sync();"，是为了将主线程阻塞，避免程序退出
+     * 20180207：在做springboot适配时，发现，即使不调用上述语句，主线程依然不会退出，验证未发现不添加此语句会有什么影响
+     */
+    @Deprecated
     public static void start() {
         if (future == null) {
             logger.warn("未启用RPC服务。如需启用，请在application.yml中设置相关配置");
@@ -225,20 +236,19 @@ public class RpcServer implements ApplicationContextAware, InitializingBean, Dis
         if (future != null) {
             future.channel().close();
         }
-        if (rpcServiceRegistry != null) {
-            rpcServiceRegistry.stop();
-        }
+        RegistryCache.destroy();
+
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
-            logger.info("Reactor线程池：完成优雅关闭（workerGroup）");
+            logger.info("<RpcServer>: Netty线程池,完成优雅关闭（workerGroup）");
         }
         if (bossGroup != null) {
             bossGroup.shutdownGracefully();
-            logger.info("Reactor线程池：完成优雅关闭（bossGroup）");
+            logger.info("<RpcServer>: Netty线程池,完成优雅关闭（bossGroup）");
         }
 
         // 关闭业务线程池
         BusinessThread.shutdown();
-        logger.info("RPC服务器：已关闭");
+        logger.info("<RpcServer>: RPC服务器已关闭");
     }
 }

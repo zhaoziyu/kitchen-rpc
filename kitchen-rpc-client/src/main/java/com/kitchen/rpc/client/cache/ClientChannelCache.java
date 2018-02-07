@@ -83,7 +83,7 @@ public class ClientChannelCache {
                 if (channelPoolMap.containsKey(serviceAddress)) {
                     channelPool = channelPoolMap.get(serviceAddress);
                 } else {
-                    Bootstrap bootstrap = ClientBoostrapFactory.createNewBoostrap(serviceAddress);
+                    Bootstrap bootstrap = ClientBootstrapFactory.createNewBootstrap(serviceAddress);
                     ProtocolChannelPoolHandler handler = new ProtocolChannelPoolHandler();
                     channelPool = new FixedChannelPool(bootstrap, handler, RpcClientConfig.CHANNEL_POOL_MAX_CONNECTIONS);
                     channelPoolMap.putIfAbsent(serviceAddress, channelPool);
@@ -137,6 +137,6 @@ public class ClientChannelCache {
             LOGGER.info("关闭[" + address + "]Channel Pool");
         }
 
-        ClientBoostrapFactory.stopEventLoopGroup();
+        ClientBootstrapFactory.stopEventLoopGroup();
     }
 }

@@ -4,6 +4,8 @@ import com.kitchen.rpc.registry.store.zookeeper.CommonCuratorTool;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionStateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ZooKeeper注册者的客户端
@@ -12,6 +14,7 @@ import org.apache.curator.framework.state.ConnectionStateListener;
  * @date 2017-03-15
  */
 public class RegistryCurator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistryCurator.class);
     /**
      * ZooKeeper客户端
      */
@@ -43,6 +46,7 @@ public class RegistryCurator {
      */
     public static void disconnectionZooKeeperServer() {
         CommonCuratorTool.disconnectionZooKeeperServer(ZOOKEEPER_CLIENT);
+        LOGGER.info("<RpcServer>: 已关闭ZooKeeper连接");
     }
 
     /**

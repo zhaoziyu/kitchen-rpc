@@ -60,7 +60,7 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
      * @throws InterruptedException
      */
     public static void initZooKeeperClient() throws InterruptedException {
-        LOGGER.info("连接ZooKeeper目录服务器中......");
+        LOGGER.info("<RpcClient>: 连接ZooKeeper目录服务器中……");
 
         // 创建 ZooKeeper 客户端
         //RetryPolicy retryPolicy = new RetryUntilElapsed(1000 * 60 * 10, 1000); // 尝试重连10分钟，每秒一次
@@ -96,7 +96,7 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
      */
     public static void subscribeAllServiceAddress() {
         String log = "";
-        log += "订阅服务";
+        log += "<RpcClient>: 订阅服务\n";
         Map<String, LinkedHashMap<String, Integer>> tempServiceAddressCache = new ConcurrentHashMap<>();
         try {
             String registryPath = ZooKeeperConfig.ZK_FIX_PATH_CHAIN__SERVICES;
@@ -121,14 +121,14 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
                 tempServiceAddressCache.put(servicePath, addressMap);
 
                 // 输出订阅信息
-                log += "\n订阅[" + servicePath + "]服务";
+                log += "订阅[" + servicePath + "]服务\n";
                 Iterator iterator = addressMap.entrySet().iterator();
                 boolean hasAddress = false;
                 String innerLog = "";
                 while (iterator.hasNext()) {
                     hasAddress = true;
                     Map.Entry entry = (Map.Entry) iterator.next();
-                    innerLog += "\n    地址[" + entry.getKey() + "] 权重[" + entry.getValue() + "]";
+                    innerLog += "    地址[" + entry.getKey() + "] 权重[" + entry.getValue() + "]\n";
                 }
                 if (hasAddress) {
                     log += " 可用服务地址：";

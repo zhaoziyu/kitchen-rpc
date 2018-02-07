@@ -123,7 +123,7 @@ public class BusinessThread {
     public static void shutdown() {
         if (threadPoolExecutor != null) {
             threadPoolExecutor.shutdown();
-            LOGGER.info("业务线程池已关闭");
+            LOGGER.info("<RpcServer>: 业务线程池已关闭");
         }
     }
 }
