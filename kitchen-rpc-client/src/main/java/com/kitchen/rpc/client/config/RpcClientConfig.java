@@ -1,12 +1,32 @@
 package com.kitchen.rpc.client.config;
 
+import com.kitchen.rpc.registry.policy.LoadBalancePolicyType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
 /**
  * RPC客户端配置
  *
  * @author 赵梓彧 - kitchen_dev@163.com
  * @date 2017-03-22
  */
+@Component
+@Lazy(false)
 public class RpcClientConfig {
+
+    @Value("${kitchen.rpc.client.open:false}")
+    public Boolean rpcOpen;
+    @Value("${kitchen.rpc.client.name:consumer}")
+    public String rpcName;
+    @Value("${kitchen.rpc.client.registry:}")
+    public String registryCenterAddress;
+    /**
+     * 获取服务地址时的负载均衡策略
+     */
+    @Value("${kitchen.rpc.client.discovery-policy:RoundRobin}")
+    public LoadBalancePolicyType SERVICE_LB_POLICY;
+
     /**
      * 连接通道池最大连接数
      *

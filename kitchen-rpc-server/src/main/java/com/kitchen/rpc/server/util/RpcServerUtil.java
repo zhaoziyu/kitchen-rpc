@@ -14,7 +14,7 @@ import java.util.List;
  * @author 赵梓彧 - kitchen_dev@163.com
  */
 public class RpcServerUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServerUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcServerUtil.class);
     private static ApplicationContext context;
 
     public static void setContext(ApplicationContext context) {
@@ -31,17 +31,17 @@ public class RpcServerUtil {
         }
 
         String log = "";
-        log += "通过Spring扫描加载下列类：";
-        log += "\n框架相关";
+        log += "\n通过Spring扫描加载下列类：";
+        log += "\n-框架相关-";
         for (String name : frame) {
             log += "\n" + name;
         }
-        log += "\n业务相关";
+        log += "\n-业务相关-";
         for (String name : business) {
             log += "\n" + name;
         }
         log += "\n——————————————————————";
-        LOGGER.info(log);
+        logger.debug(log);
     }
 
     public static <T> T getBean(final Class<?> loadClass) throws Exception {

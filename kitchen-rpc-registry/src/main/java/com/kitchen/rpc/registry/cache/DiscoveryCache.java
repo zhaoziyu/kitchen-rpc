@@ -23,7 +23,7 @@ public class DiscoveryCache {
     private static BaseServiceAddressPolicy policy;
 
     static {
-        switch (PolicyConfig.GET_SERVICE_ADDRESS_POLICY) {
+        switch (PolicyConfig.SERVICE_LB_POLICY) {
             case Random:
                 // 适用场景不限
                 policy = new ServiceAddressByRandom();

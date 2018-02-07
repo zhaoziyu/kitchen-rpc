@@ -36,7 +36,7 @@ public class ServerDeployFetcherFactory {
             try {
                 fetchType = HostFetchType.valueOf(type);
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException("初始化异常：rpc.provider.host.type参数超出规定范围，请检查rpc-provider.properties");
+                throw new RuntimeException("初始化异常：kitchen.rpc.server.host.type参数超出规定范围，请检查配置");
             }
         }
 
@@ -77,7 +77,7 @@ public class ServerDeployFetcherFactory {
             try {
                 fetchType = PortFetchType.valueOf(type);
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException("初始化异常：rpc.provider.port.type参数超出规定范围，请检查rpc-provider.properties");
+                throw new RuntimeException("初始化异常：kitchen.rpc.server.host.type参数超出规定范围，请检查配置");
             }
         }
 

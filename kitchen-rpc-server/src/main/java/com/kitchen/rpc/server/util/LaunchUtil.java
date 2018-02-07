@@ -7,9 +7,12 @@ import java.util.List;
 /**
  * 处理RPC服务端启动相关参数
  *
+ * Deprecated ：使用springboot默认机制，通过命令行传入的"--"开头的参数可直接覆盖配置属性。即：java -jar ***.jar --xxx.xxx.xxx=yyy，将覆盖application.yml中的xxx.xxx.xxx参数
+ *
  * @author 赵梓彧 - zhaoziyu@inspur.com
  * @date 2017-07-03
  */
+@Deprecated
 public class LaunchUtil {
 
     // 运行参数缓存

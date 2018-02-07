@@ -11,7 +11,7 @@ import com.kitchen.rpc.server.deploy.host.wan.windows.WindowsWideAreaNetwork;
 import java.io.IOException;
 
 /**
- * 获取广域网（WAN网）IP地址，无需填写rpc.provider.host；
+ * 获取广域网（WAN网）IP地址，无需填写kitchen.rpc.server.host；
  * 适用于连接广域网的宿主主机
  *
  * @date 2017-04-20

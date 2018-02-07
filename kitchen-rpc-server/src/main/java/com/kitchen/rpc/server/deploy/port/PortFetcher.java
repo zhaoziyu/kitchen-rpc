@@ -13,7 +13,7 @@ public interface PortFetcher {
     /**
      * 获取可用的端口号
      *
-     * @param portArg 对应rpc-provider.properties中的rpc.provider.port参数
+     * @param portArg 对应配置中的kitchen.rpc.server.port参数
      * @return
      */
     Integer getPort(Integer portArg) throws ProviderDeployException;

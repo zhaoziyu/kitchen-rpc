@@ -1,6 +1,8 @@
 package com.kitchen.rpc.registry.store.zookeeper.discovery;
 
 import com.kitchen.rpc.common.meta.RpcRequest;
+import com.kitchen.rpc.registry.policy.LoadBalancePolicyType;
+import com.kitchen.rpc.registry.policy.PolicyConfig;
 import com.kitchen.rpc.registry.store.RpcServiceDiscovery;
 import com.kitchen.rpc.registry.cache.DiscoveryCache;
 import com.kitchen.rpc.registry.store.zookeeper.ZooKeeperConfig;

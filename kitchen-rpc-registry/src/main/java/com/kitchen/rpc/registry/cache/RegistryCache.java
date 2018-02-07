@@ -72,12 +72,12 @@ public class RegistryCache {
 
                 // 注册服务
                 rpcServiceRegistry.registerService(interfaceName, content);
-                log += "服务提供者(" + rpcServiceName + "  " + serverAddress + ")：注册服务至服务注册中心[" + interfaceName + "]\n";
+                log += "服务提供者(" + rpcServiceName + "  " + serverAddress + ")注册服务[" + interfaceName + "]至服务注册中心\n";
             }
 
             // 注册服务节点信息
             rpcServiceRegistry.registerServiceNode(rpcServiceName, serverAddress);
-            log += "服务提供者(" + rpcServiceName + "  " + serverAddress + ")：完成全部服务注册";
+            log += "服务提供者(" + rpcServiceName + "  " + serverAddress + ")完成全部服务注册";
             LOGGER.info(log);
         }
     }

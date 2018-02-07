@@ -4,9 +4,7 @@ import com.kitchen.rpc.client.config.RpcClientConfig;
 import com.kitchen.rpc.client.handler.ProtocolChannelPoolHandler;
 import com.kitchen.rpc.common.meta.RpcRequest;
 import com.kitchen.rpc.common.util.RpcStringUtil;
-import com.kitchen.rpc.registry.cache.DiscoveryCache;
 import com.kitchen.rpc.registry.store.RpcServiceDiscovery;
-import com.kitchen.rpc.registry.store.fix.FixStoreConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.pool.FixedChannelPool;
@@ -122,11 +120,6 @@ public class ClientChannelCache {
                 interfaceName += "-" + serviceVersion;
             }
             serviceAddress = rpcServiceDiscovery.discoverService(interfaceName, rpcRequest);
-        }
-
-        if (RpcStringUtil.isEmpty(serviceAddress)) {
-            // 查看固定的地址是否存在
-            serviceAddress = DiscoveryCache.getServiceAddress(FixStoreConfig.DEFAULT_KEY, null);
         }
 
         if (RpcStringUtil.isEmpty(serviceAddress)) {

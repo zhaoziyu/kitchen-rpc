@@ -18,6 +18,8 @@ public class CallbackThreadPool {
     }
 
     public static void stop() {
-        threadPoolExecutor.shutdown();
+        if (threadPoolExecutor != null) {
+            threadPoolExecutor.shutdown();
+        }
     }
 }

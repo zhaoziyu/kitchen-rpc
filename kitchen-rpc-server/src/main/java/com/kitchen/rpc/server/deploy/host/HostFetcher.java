@@ -13,7 +13,7 @@ public interface HostFetcher {
     /**
      * 获取可用的IP地址
      *
-     * @param hostArg 对应rpc-provider.properties中的rpc.provider.host参数
+     * @param hostArg 对应配置中的kitchen.rpc.server.host参数
      * @return
      */
     String getIp(String hostArg) throws ProviderDeployException;

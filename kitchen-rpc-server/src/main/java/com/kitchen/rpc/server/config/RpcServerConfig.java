@@ -1,24 +1,47 @@
 package com.kitchen.rpc.server.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
 /**
  * RPC服务器的配置
  *
  * @date 2016-12-02
  * @author 赵梓彧 - kitchen_dev@163.com
  */
+@Component
+@Lazy(false)
 public class RpcServerConfig {
+
+    @Value("${kitchen.rpc.server.open:false}")
+    public Boolean rpcOpen;
+    @Value("${kitchen.rpc.server.name:provider}")
+    public String rpcName;
+    @Value("${kitchen.rpc.server.host.type:default}")
+    public String serverHostType;
+    @Value("${kitchen.rpc.server.host.ip}")
+    public String serverHostIp;
+    @Value("${kitchen.rpc.server.port.type:random}")
+    public String serverPortType;
+    @Value("${kitchen.rpc.server.port.number}")
+    public Integer serverPortNumber;
+    @Value("${kitchen.rpc.server.weight:1}")
+    public Integer serverWeight;
+    @Value("${kitchen.rpc.server.registry}")
+    public String registry;
 
     /**
      * 默认的RPC服务端口号
      *
-     * 当未在rpc-provider.properties中指定rpc.provider.port.type参数为default时，使用此端口号提供服务
+     * 当未在配置中指定kitchen.rpc.server.port.type参数为default时，使用此端口号提供服务
      */
     public static int DEFAULT_PORT = 8999;
 
     /**
      * 默认的RPC服务IP地址
      *
-     * 当未在rpc-provider.properties中指定rpc.provider.host.type参数为default时，使用此IP提供服务
+     * 当未在配置中指定kitchen.rpc.server.host.type参数为default时，使用此IP提供服务
      */
     public static String DEFAULT_HOST = "127.0.0.1";
 

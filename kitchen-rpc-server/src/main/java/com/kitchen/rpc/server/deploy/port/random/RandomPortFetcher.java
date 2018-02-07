@@ -16,7 +16,7 @@ import java.util.Random;
  * @author 赵梓彧 - kitchen_dev@163.com
  */
 public class RandomPortFetcher implements PortFetcher {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RandomPortFetcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(RandomPortFetcher.class);
 
     private static final int PORT_BEGIN = 8000;
     private static final int PORT_END = 65535;
@@ -24,24 +24,22 @@ public class RandomPortFetcher implements PortFetcher {
     @Override
     public Integer getPort(Integer portArg) throws ProviderDeployException {
         boolean already = false;
-        Integer useablePort = null;
-        String log = "";
+        Integer usablePort = null;
         while (!already) {
             int port = generateIntValueByRange(PORT_BEGIN, PORT_END);
-            log += "正在尝试端口" + port + "的可用性\n";
+            logger.info("正在尝试端口" + port + "的可用性\n");
             Pair<Boolean, String> result = PortVerifier.availability(port);
             if (result.getValue0()) {
                 already = true;
-                useablePort = port;
+                usablePort = port;
             }
         }
 
-        if (useablePort == null) {
+        if (usablePort == null) {
             throw new ProviderDeployException("初始化异常：未找到可用端口");
         }
-        log += "端口" + useablePort + "可用";
-        LOGGER.info(log);
-        return useablePort;
+        logger.info("端口" + usablePort + "可用");
+        return usablePort;
     }
 
     /**

@@ -42,7 +42,7 @@
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
 
         <!--指定版本号-->
-        <spring.version>4.3.2.RELEASE</spring.version>
+        <spring.version>4.3.13.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
         <netty-version>4.1.15.Final</netty-version>
         <collections4.version>4.0</collections4.version>
@@ -56,6 +56,13 @@
     </properties>
 
     <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <!--
             Java元组支持 http://www.javatuples.org/
 
