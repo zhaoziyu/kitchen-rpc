@@ -128,16 +128,15 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
                 while (iterator.hasNext()) {
                     hasAddress = true;
                     Map.Entry entry = (Map.Entry) iterator.next();
-                    innerLog += "    地址[" + entry.getKey() + "] 权重[" + entry.getValue() + "]\n";
+                    innerLog += "    [" + entry.getKey() + "] 权重[" + entry.getValue() + "]\n";
                 }
                 if (hasAddress) {
-                    log += " 可用服务地址：";
+                    log += " 可用服务地址：\n";
                 } else {
-                    log += " 未发现可用服务地址";
+                    log += " 未发现可用服务地址\n";
                 }
 
                 log += innerLog;
-                log += "\n";
             }
             DiscoveryCache.setServiceAddressCache(tempServiceAddressCache);
         } catch (Exception e) {
