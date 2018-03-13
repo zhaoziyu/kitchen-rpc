@@ -137,6 +137,7 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
                 }
 
                 log += innerLog;
+                log += "\n";
             }
             DiscoveryCache.setServiceAddressCache(tempServiceAddressCache);
         } catch (Exception e) {
