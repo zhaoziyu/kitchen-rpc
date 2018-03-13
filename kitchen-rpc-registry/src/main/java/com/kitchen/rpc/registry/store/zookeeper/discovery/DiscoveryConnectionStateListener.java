@@ -29,7 +29,7 @@ public class DiscoveryConnectionStateListener implements ConnectionStateListener
                 LOGGER.debug("连接丢失，正在尝试重连");
                 CONNECTED = false;
                 // 关闭ZooKeeper节点检查者
-                DiscoveryCurator.destroyProviderNodeCache();
+                DiscoveryCurator.destroyTreeNodeCache();
                 // 关闭ZooKeeper连接
                 DiscoveryCurator.disconnectionZooKeeperServer();
                 // 初始化ZooKeeper客户端

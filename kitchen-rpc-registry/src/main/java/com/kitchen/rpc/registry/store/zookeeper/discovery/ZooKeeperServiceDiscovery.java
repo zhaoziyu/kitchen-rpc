@@ -1,8 +1,6 @@
 package com.kitchen.rpc.registry.store.zookeeper.discovery;
 
 import com.kitchen.rpc.common.meta.RpcRequest;
-import com.kitchen.rpc.registry.policy.LoadBalancePolicyType;
-import com.kitchen.rpc.registry.policy.PolicyConfig;
 import com.kitchen.rpc.registry.store.RpcServiceDiscovery;
 import com.kitchen.rpc.registry.cache.DiscoveryCache;
 import com.kitchen.rpc.registry.store.zookeeper.ZooKeeperConfig;
@@ -47,7 +45,7 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
     @Override
     public void stop() {
         // 关闭ZooKeeper节点检查者
-        DiscoveryCurator.destroyProviderNodeCache();
+        DiscoveryCurator.destroyTreeNodeCache();
         // 清空服务地址缓存
         DiscoveryCache.clear();
         // 关闭ZooKeeper连接
@@ -152,9 +150,6 @@ public class ZooKeeperServiceDiscovery implements RpcServiceDiscovery {
      */
     public static void watcherPath(String path) {
         // 创建节点缓存
-        DiscoveryCurator.createProviderNodeCache(path);
-
-        // 添加节点监听器
-        DiscoveryCurator.addProviderNodeListener(new DiscoveryTreeCacheListener());
+        DiscoveryCurator.createTreeNodeCache(path, new DiscoveryTreeCacheListener());
     }
 }

@@ -20,17 +20,13 @@ import java.util.List;
  */
 public class DiscoveryCurator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryCurator.class);
+
+    //------------------------------------------------------CuratorFramework-----------------------------------------------------
     /**
      * ZooKeeper客户端
      */
     private static CuratorFramework ZOOKEEPER_CLIENT;
 
-    /**
-     * ZooKeeper节点的本地缓存及节点状态监听
-     */
-    private static TreeCache PROVIDER_NODES_CACHE;
-
-    //------------------------------------------------------CuratorFramework-----------------------------------------------------
     /**
      * 创建ZooKeeper客户端，并开启与ZooKeeper服务器的连接
      *
@@ -61,33 +57,31 @@ public class DiscoveryCurator {
 
     //---------------------------------------------------------TreeCache---------------------------------------------------------
     /**
+     * ZooKeeper节点的本地缓存及节点状态监听
+     */
+    private static TreeCache TREE_NODES_CACHE;
+
+    /**
      * 创建ZooKeeper的TreeCache
      *
      * @param path
      */
-    public static void createProviderNodeCache(String path) {
-        PROVIDER_NODES_CACHE = new TreeCache(ZOOKEEPER_CLIENT, path);
+    public static void createTreeNodeCache(String path, TreeCacheListener listener) {
+        TREE_NODES_CACHE = new TreeCache(ZOOKEEPER_CLIENT, path);
+        TREE_NODES_CACHE.getListenable().addListener(listener);
         try {
-            PROVIDER_NODES_CACHE.start();
+            TREE_NODES_CACHE.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     /**
-     * 添加TreeCache监听器
-     *
-     * @param listener
-     */
-    public static void addProviderNodeListener(TreeCacheListener listener) {
-        PROVIDER_NODES_CACHE.getListenable().addListener(listener);
-    }
-    /**
      * 销毁ZooKeeper的TreeCache
      */
-    public static void destroyProviderNodeCache() {
-        if (PROVIDER_NODES_CACHE != null) {
-            PROVIDER_NODES_CACHE.close();
-            PROVIDER_NODES_CACHE = null;
+    public static void destroyTreeNodeCache() {
+        if (TREE_NODES_CACHE != null) {
+            TREE_NODES_CACHE.close();
+            TREE_NODES_CACHE = null;
             LOGGER.info("<RpcClient>: 关闭ZooKeeper节点检查者");
         }
     }

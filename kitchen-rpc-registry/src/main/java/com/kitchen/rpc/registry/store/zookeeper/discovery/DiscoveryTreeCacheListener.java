@@ -23,6 +23,7 @@ public class DiscoveryTreeCacheListener implements TreeCacheListener {
 
     @Override
     public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
+        //LOGGER.error("DiscoveryTreeCacheListener——" + treeCacheEvent);
         if (treeCacheEvent == null) {
             return;
         }
