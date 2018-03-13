@@ -18,7 +18,8 @@ public class DiscoveryTreeCacheListener implements TreeCacheListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryTreeCacheListener.class);
 
     private final static Charset CHARSET = Charset.forName("UTF-8");
-    private static boolean initialized = false;
+
+    private static boolean INITIALIZED = false;
 
     @Override
     public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
@@ -29,25 +30,25 @@ public class DiscoveryTreeCacheListener implements TreeCacheListener {
         boolean updated = false;
         switch (treeCacheEvent.getType()) {
             case NODE_ADDED:
-                if (initialized) {
+                if (DiscoveryConnectionStateListener.CONNECTED && INITIALIZED) {
                     this.printEventMsg(treeCacheEvent, true, true);
                     updated = true;
                 }
                 break;
             case NODE_UPDATED:
-                if (initialized) {
+                if (DiscoveryConnectionStateListener.CONNECTED && INITIALIZED) {
                     this.printEventMsg(treeCacheEvent, true, true);
                     updated = true;
                 }
                 break;
             case NODE_REMOVED:
-                if (initialized) {
+                if (DiscoveryConnectionStateListener.CONNECTED && INITIALIZED) {
                     this.printEventMsg(treeCacheEvent, true, false);
                     updated = true;
                 }
                 break;
             case INITIALIZED:
-                initialized = true;
+                INITIALIZED = true;
                 updated = true;
                 break;
             case CONNECTION_LOST:
@@ -58,13 +59,13 @@ public class DiscoveryTreeCacheListener implements TreeCacheListener {
                 break;
         }
         if (updated) {
-            // 刷新Discovery缓存
+            // 刷新本地注册中心缓存（重新订阅）
             ZooKeeperServiceDiscovery.subscribeAllServiceAddress();
         }
     }
 
     private void printEventMsg(TreeCacheEvent treeCacheEvent, boolean path, boolean data) {
-        String msg = "[" + treeCacheEvent.getType() + "]";
+        String msg = "<RpcClient>: [" + treeCacheEvent.getType() + "]";
 
         try {
             if (path) {

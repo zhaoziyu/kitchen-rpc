@@ -15,14 +15,19 @@ import org.slf4j.LoggerFactory;
  */
 public class DiscoveryConnectionStateListener implements ConnectionStateListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryConnectionStateListener.class);
+    public static boolean CONNECTED = false; //记录当前是否连接到Zookeeper的状态
+
     @Override
     public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
         if (connectionState == ConnectionState.CONNECTED) {
             LOGGER.debug("已连接ZooKeeper");
+            CONNECTED = true;
+
             ZooKeeperServiceDiscovery.watcherPath(ZooKeeperConfig.ZK_FIX_PATH_CHAIN__NODES);
         } else if (connectionState == ConnectionState.LOST) {
             try {
                 LOGGER.debug("连接丢失，正在尝试重连");
+                CONNECTED = false;
                 // 关闭ZooKeeper节点检查者
                 DiscoveryCurator.destroyProviderNodeCache();
                 // 关闭ZooKeeper连接
@@ -34,6 +39,7 @@ public class DiscoveryConnectionStateListener implements ConnectionStateListener
             }
         } else if (connectionState == ConnectionState.RECONNECTED) { // Session 重连
             LOGGER.debug("已重新连接ZooKeeper");
+            CONNECTED = true;
         }
     }
 }
